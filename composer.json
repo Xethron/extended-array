@@ -1,0 +1,22 @@
+{
+    "name": "xethron/extended-array",
+    "description": "Extended Array gives PHP arrays new life",
+    "keywords": ["array", "object", "extended"],
+    "homepage": "http://github.com/Xethron/extended-array",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Bernhard Breytenbach",
+            "email": "bernhard@coffeecode.co.za"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+
+    },
+    "autoload": {
+        "psr-4": {
+            "Xethron\\": "src/"
+        }
+    }
+}
