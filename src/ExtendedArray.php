@@ -39,14 +39,54 @@ class ExtendedArray implements \ArrayAccess {
 	}
 
 	/**
-	 * Check if an element exists
+	 * Check if the given key exists.
+	 *
+	 * @param  string|array  $key
+	 * @return bool
+	 */
+	public function exists($key)
+	{
+		$keys = is_array($key) ? $key : func_get_args();
+
+		$array = $this->array;
+
+		foreach ($keys as $value)
+		{
+			if ( ! array_key_exists($value, $array)) return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Check if the given key contains a non-empty value.
 	 *
 	 * @param string $key
 	 * @return bool
 	 */
 	public function has($key)
 	{
-		return isset($this->array[$key]);
+		$keys = is_array($key) ? $key : func_get_args();
+
+		foreach ($keys as $value)
+		{
+			if ($this->isEmptyString($value)) return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Check if the given key is an empty string.
+	 *
+	 * @param  string  $key
+	 * @return bool
+	 */
+	protected function isEmptyString($key)
+	{
+		$boolOrArray = is_bool($this->get($key)) || is_array($this->get($key));
+
+		return ! $boolOrArray && trim((string) $this->get($key, '')) === '';
 	}
 
 	/**
@@ -58,7 +98,7 @@ class ExtendedArray implements \ArrayAccess {
 	 */
 	public function get($key, $default = null)
 	{
-		return $this->has($key) ? $this->array[$key] : $default;
+		return $this->exists($key) ? $this->array[$key] : $default;
 	}
 
 	/**
@@ -84,30 +124,31 @@ class ExtendedArray implements \ArrayAccess {
 	/**
 	 * Check if array contains all the given elements
 	 *
+	 * @deprecated
+	 *
 	 * @param array $keys
 	 * @return bool
 	 */
 	public function hasAll(array $keys)
 	{
-		foreach ($keys as $key) {
-			if ( ! array_key_exists($key, $this->array) )
-				return false;
-		}
-		return true;
+		return $this->has($keys);
 	}
 
 	/**
 	 * Check if array contains at least one of the given elements
 	 *
-	 * @param array $keys
+	 * @param array|string $key
 	 * @return bool
 	 */
-	public function hasOne(array $keys)
+	public function hasOne($key)
 	{
-		foreach ($keys as $key) {
-			if ( array_key_exists($key, $this->array) )
-				return true;
+		$keys = is_array($key) ? $key : func_get_args();
+
+		foreach ($keys as $value)
+		{
+			if ( ! $this->isEmptyString($value)) return true;
 		}
+
 		return false;
 	}
 
@@ -161,7 +202,7 @@ class ExtendedArray implements \ArrayAccess {
 	 * @return boolean
 	 */
 	public function __isset($key) {
-		return $this->has($key);
+		return $this->exists($key);
 	}
 
 	/**
@@ -194,7 +235,7 @@ class ExtendedArray implements \ArrayAccess {
 	 * @abstracting  ArrayAccess
 	 */
 	public function offsetExists($key) {
-		return $this->has($key);
+		return $this->exists($key);
 	}
 
 	/**
