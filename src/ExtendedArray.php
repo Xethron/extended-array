@@ -122,19 +122,6 @@ class ExtendedArray implements \ArrayAccess {
 	}
 
 	/**
-	 * Check if array contains all the given elements
-	 *
-	 * @deprecated
-	 *
-	 * @param array $keys
-	 * @return bool
-	 */
-	public function hasAll(array $keys)
-	{
-		return $this->has($keys);
-	}
-
-	/**
 	 * Check if array contains at least one of the given elements
 	 *
 	 * @param array|string $key
