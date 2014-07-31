@@ -62,6 +62,8 @@ Contributors
 
 Bernhard Breytenbach ([@BBreyten](https://twitter.com/BBreyten))
 
+This library is based on ideas and code from the Laravel Framework.
+
 License
 ----------
 
