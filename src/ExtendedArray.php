@@ -68,9 +68,28 @@ class ExtendedArray implements \ArrayAccess {
 	{
 		$keys = is_array($key) ? $key : func_get_args();
 
-		foreach ($keys as $value)
+		foreach ($keys as $key)
 		{
-			if ($this->isEmptyString($value)) return false;
+			if ($this->exists($key)) {
+				if ($this->isEmptyString($this->array[$key]))
+					return false;
+				else
+					continue;
+			}
+
+			$array = $this->array;
+
+			foreach (explode('.', $key) as $segment)
+			{
+				if ( ! is_array($array) || ! array_key_exists($segment, $array))
+				{
+					return false;
+				}
+
+				$array = $array[$segment];
+			}
+
+			if ($this->isEmptyString($array)) return false;
 		}
 
 		return true;
@@ -79,14 +98,15 @@ class ExtendedArray implements \ArrayAccess {
 	/**
 	 * Check if the given key is an empty string.
 	 *
-	 * @param  string  $key
+	 * @param  string  $value
+	 *
 	 * @return bool
 	 */
-	protected function isEmptyString($key)
+	protected function isEmptyString($value)
 	{
-		$boolOrArray = is_bool($this->get($key)) || is_array($this->get($key));
+		$boolOrArray = is_bool($value) || is_array($value);
 
-		return ! $boolOrArray && trim((string) $this->get($key, '')) === '';
+		return ! $boolOrArray && trim((string) $value) === '';
 	}
 
 	/**
@@ -98,7 +118,23 @@ class ExtendedArray implements \ArrayAccess {
 	 */
 	public function get($key, $default = null)
 	{
-		return $this->exists($key) ? $this->array[$key] : $default;
+		if (empty($key)) return $this->array;
+
+		if ($this->exists($key)) return $this->array[$key];
+
+		$result = $this->array;
+
+		foreach (explode('.', $key) as $segment)
+		{
+			if ( ! is_array($result) || ! array_key_exists($segment, $result))
+			{
+				return $default;
+			}
+
+			$result = $result[$segment];
+		}
+
+		return $result;
 	}
 
 	/**
@@ -131,9 +167,9 @@ class ExtendedArray implements \ArrayAccess {
 	{
 		$keys = is_array($key) ? $key : func_get_args();
 
-		foreach ($keys as $value)
+		foreach ($keys as $key)
 		{
-			if ( ! $this->isEmptyString($value)) return true;
+			if ($this->has($key)) return true;
 		}
 
 		return false;
