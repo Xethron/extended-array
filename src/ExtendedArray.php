@@ -94,7 +94,18 @@ class ExtendedArray implements \ArrayAccess {
 
 		return true;
 	}
-
+	
+	/**
+	 * Check if the given key contains a non-empty value.
+	 *
+	 * @param string $key
+	 * @return bool
+	 */
+	public function filled($key)
+	{
+	    return $this->has($key);
+	}
+	
 	/**
 	 * Check if the given key is an empty string.
 	 *
